@@ -1,8 +1,8 @@
 import RegisterScreen from "@/components/register";
 import React from "react";
-import { StyleSheet } from "react-native";
-const registerPage = () => {
+
+const signup = () => {
   return <RegisterScreen />;
 };
 
-export default registerPage;
+export default signup;
