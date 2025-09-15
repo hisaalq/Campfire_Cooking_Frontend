@@ -1,8 +1,8 @@
 import RegisterScreen from "@/components/register";
 import React from "react";
 
-const Index = () => {
+const signup = () => {
   return <RegisterScreen />;
 };
 
-export default Index;
+export default signup;
