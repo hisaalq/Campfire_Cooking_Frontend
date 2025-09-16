@@ -27,21 +27,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 import { isAxiosError } from "axios";
+import { COLORS } from "@/assets/style/colors";
+import styles from "@/assets/style/stylesheet";
 
-/** —— Brand palette (from your swatch) —— */
-const COLORS = {
-    navy: "#012840",
-    teal: "#034040",
-    cream: "#F2EAD0",
-    amber: "#F29F05",
-    orange: "#F28B0C",
-    blueText: "#109494",
-    blueStroke: "#7A645C",
-    fieldBg: "#FFFFFF",
-    error: "#C0392B",
-    placeholder: "rgba(3,64,64,0.45)",
-    disabled: "rgba(1,40,64,0.25)",
-  } as const;
+
+
 
   /** —— Validation —— */
   const LoginSchema = z.object({
@@ -195,110 +185,3 @@ export default function LoginScreen() {
     </SafeAreaView>
   );
 };
-
-/** —— Styles —— */
-const styles = StyleSheet.create({
-    safe: { flex: 1, backgroundColor: COLORS.cream },
-    scroll: {
-      paddingHorizontal: 22,
-      paddingTop: 8,
-      paddingBottom: 28,
-      alignItems: "center",
-      gap: 18,
-    },
-    headerRow: { width: "100%", alignItems: "flex-start", marginTop: 2 },
-    backBtn: {
-      borderWidth: 2,
-      borderColor: COLORS.blueStroke,
-      backgroundColor: "#F5EEDF",
-      padding: 8,
-      borderRadius: 12,
-      shadowColor: COLORS.navy,
-      shadowOpacity: 0.08,
-      shadowRadius: 6,
-      shadowOffset: { width: 0, height: 2 },
-    },
-    title: {
-      fontSize: 36,
-      lineHeight: 40,
-      color: COLORS.blueText,
-      letterSpacing: 0.5,
-      textAlign: "center",
-    },
-    iconPressable: {
-      position: "relative",
-      alignSelf: "center",
-    },
-    icon: {
-      width: 88,
-      height: 88,
-      borderRadius: 18,
-      borderWidth: 2,
-      borderColor: COLORS.navy, // palette border
-      marginTop: 6,
-      alignSelf: "center",
-      // depth
-      shadowColor: COLORS.teal,
-      shadowOpacity: 0.25,
-      shadowRadius: 6,
-      shadowOffset: { width: 0, height: 3 },
-      elevation: 4,
-      backgroundColor: COLORS.cream,
-    },
-    editBadge: {
-      position: "absolute",
-      right: -6,
-      bottom: -6,
-      backgroundColor: COLORS.teal,
-      borderRadius: 12,
-      padding: 6,
-      borderWidth: 2,
-      borderColor: COLORS.cream,
-    },
-    formBlock: { width: "100%", marginTop: 8 },
-    label: { color: COLORS.blueText, fontSize: 16, fontWeight: "700" },
-    inputWrap: {
-      marginTop: 8,
-      borderWidth: 2,
-      borderColor: COLORS.blueStroke,
-      backgroundColor: COLORS.fieldBg,
-      borderRadius: 14,
-      paddingHorizontal: 14,
-      paddingVertical: Platform.select({ ios: 14, android: 6 }),
-      shadowColor: COLORS.navy,
-      shadowOpacity: 0.06,
-      shadowRadius: 6,
-      shadowOffset: { width: 0, height: 2 },
-    },
-    withIcon: { position: "relative" },
-    eyeBtn: {
-      position: "absolute",
-      right: 12,
-      top: Platform.select({ ios: 14, android: 10 }),
-      height: 28,
-      width: 28,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    input: {
-      fontSize: 18,
-      color: COLORS.teal,
-      paddingVertical: Platform.select({ ios: 4, android: 2 }),
-    },
-    error: { marginTop: 6, color: COLORS.error, fontSize: 13 },
-    cta: {
-      width: "100%",
-      borderRadius: 18,
-      paddingVertical: 16,
-      alignItems: "center",
-      justifyContent: "center",
-      shadowColor: COLORS.orange,
-      shadowOpacity: 0.25,
-      shadowRadius: 12,
-      shadowOffset: { width: 0, height: 6 },
-      marginTop: 12,
-    },
-    ctaText: { color: "#FFFFFF", fontSize: 20, fontWeight: "800", letterSpacing: 0.25 },
-    hint: { marginTop: 12, color: "rgba(107,84,76,0.85)", textAlign: "center" },
-    link: { color: COLORS.teal, fontWeight: "700" },
-  });

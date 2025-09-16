@@ -15,46 +15,15 @@ import {
 import { Feather, MaterialIcons, Entypo, FontAwesome5 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { COLORS } from "@/assets/style/colors";
+import styles from "@/assets/style/stylesheet";
 
 // If you have these in your project already, keep the imports.
 // Otherwise, replace with your own fetcher.
 import instance from "@/api/index";         // axios instance (baseURL set)
 import { getToken } from "@/api/storage";   // SecureStore wrapper
+import { getUser } from "@/api/auth";
 
-/** —— Brand palette —— */
-const COLORS = {
-  navy: "#012840",
-  teal: "#034040",
-  cream: "#F2EAD0",
-  amber: "#F29F05",
-  orange: "#F28B0C",
-  card: "#FFFFFF",
-  text: "#6B544C",
-  stroke: "#E2D6C8",
-  peach: "#FFE7D4",
-};
-
-type UserProfile = {
-  _id: string;
-  username: string;
-  email: string;
-  image?: string;
-  bio?: string;
-  location?: string; // optional if you store it
-  createdAt?: string;
-  followers?: string[]; // ids
-  following?: string[]; // ids
-  created_recipes?: string[]; // ids
-};
-
-async function getMyProfile(): Promise<UserProfile> {
-  const token = await getToken();
-  const { data } = await instance.get("/api/me", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  // backend may return { user, ... } or the user directly
-  return (data?.user ?? data) as UserProfile;
-}
 
 function formatCount(n = 0) {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "m";
@@ -65,8 +34,8 @@ function formatCount(n = 0) {
 export default function ProfileScreen() {
   const router = useRouter();
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["me"],
-    queryFn: getMyProfile,
+    queryKey: ["profile"],
+    queryFn: getUser,
     staleTime: 60_000,
   });
 

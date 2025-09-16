@@ -1,0 +1,17 @@
+export const COLORS = {
+    navy: "#012840",
+    teal: "#034040",
+    cream: "#F2EAD0",
+    amber: "#F29F05",
+    orange: "#F28B0C",
+    blueText: "#109494",
+    blueStroke: "#7A645C",
+    fieldBg: "#FFFFFF",
+    error: "#C0392B",
+    card: "#FFFFFF",
+    text: "#6B544C",
+    stroke: "#E2D6C8",
+    peach: "#FFE7D4",
+    placeholder: "rgba(3,64,64,0.45)",
+    disabled: "rgba(1,40,64,0.25)",
+  } as const;

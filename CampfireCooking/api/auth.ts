@@ -1,6 +1,6 @@
 // api/auth.ts
 import instance from "./index";
-import { storeToken } from "./storage";
+import { getToken, storeToken } from "./storage";
 
 export interface UserInfo {
   username: string;
