@@ -32,8 +32,8 @@ const COLORS = {
   cream: "#F2EAD0",
   amber: "#F29F05",
   orange: "#F28B0C",
-  brownText: "#6B544C",
-  brownStroke: "#7A645C",
+  blueText: "#109494",
+  blueStroke: "#7A645C",
   fieldBg: "#FFFFFF",
   error: "#C0392B",
   placeholder: "rgba(3,64,64,0.45)",
@@ -77,7 +77,7 @@ export default function RegisterScreen() {
     mutationFn: registerRequest, // expects { email, password, verifyPassword, image? }
     onSuccess: () => {
       Alert.alert("Welcome to the Campfire! 🔥", "Your account was created.");
-      // router.replace("/(auth)/signin");
+     router.replace("/(auth)/signin");
     },
     onError: (err: unknown) => {
       const message = isAxiosError(err)
@@ -133,13 +133,14 @@ export default function RegisterScreen() {
       <StatusBar barStyle="dark-content" />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.select({ ios: "padding", android: undefined })}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
       >
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
           {/* Back */}
           <View style={styles.headerRow}>
             <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={10}>
-              <Feather name="arrow-left" size={20} color={COLORS.brownText} />
+              <Feather name="arrow-left" size={20} color={COLORS.blueText} />
             </Pressable>
           </View>
 
@@ -166,14 +167,14 @@ export default function RegisterScreen() {
 
           {/* Form */}
           <View style={styles.formBlock}>
-            <Text style={styles.label}>Full Name</Text>
+            <Text style={styles.label}>username:</Text>
             <Controller
               control={control}
               name="username"
               render={({ field: { onChange, onBlur, value } }) => (
                 <View style={styles.inputWrap}>
                   <TextInput
-                    placeholder="Casey Jones"
+                    placeholder="Casey1"
                     placeholderTextColor={COLORS.placeholder}
                     selectionColor={COLORS.teal}
                     style={styles.input}
@@ -291,8 +292,6 @@ export default function RegisterScreen() {
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      <Stack.Screen options={{ headerShown: false }} />
     </SafeAreaView>
   );
 }
@@ -310,7 +309,7 @@ const styles = StyleSheet.create({
   headerRow: { width: "100%", alignItems: "flex-start", marginTop: 2 },
   backBtn: {
     borderWidth: 2,
-    borderColor: COLORS.brownStroke,
+    borderColor: COLORS.blueStroke,
     backgroundColor: "#F5EEDF",
     padding: 8,
     borderRadius: 12,
@@ -322,7 +321,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     lineHeight: 40,
-    color: COLORS.brownText,
+    color: COLORS.blueText,
     letterSpacing: 0.5,
     textAlign: "center",
   },
@@ -357,11 +356,11 @@ const styles = StyleSheet.create({
     borderColor: COLORS.cream,
   },
   formBlock: { width: "100%", marginTop: 8 },
-  label: { color: COLORS.brownText, fontSize: 16, fontWeight: "700" },
+  label: { color: COLORS.blueText, fontSize: 16, fontWeight: "700" },
   inputWrap: {
     marginTop: 8,
     borderWidth: 2,
-    borderColor: COLORS.brownStroke,
+    borderColor: COLORS.blueStroke,
     backgroundColor: COLORS.fieldBg,
     borderRadius: 14,
     paddingHorizontal: 14,
