@@ -1,6 +1,6 @@
 // api/auth.ts
 import instance from "./index";
-import { storeToken } from "./storage";
+import { getToken, storeToken } from "./storage";
 
 export interface UserInfo {
   username: string;
@@ -18,5 +18,16 @@ const register = async (userInfo: UserInfo) => {
   return data;
 };
 
-export { register };
+const login = async (userInfo: UserInfo) => {
+  const { data } = await instance.post<RegisterResponse>("/api/signin", userInfo);
+  await storeToken(data.token);
+  return data;
+};
+
+const getUser = async () => {
+  const { data } = await instance.get<RegisterResponse>("/api/profile");
+  return data;
+};
+
+export { register, login, getUser };
 
