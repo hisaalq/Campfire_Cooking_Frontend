@@ -25,7 +25,9 @@ export interface CategoryResponse {
 }
 
 export const getCategories = async (): Promise<CategoriesResponse> => {
-  const { data } = await instance.get<CategoriesResponse>("/api/categories");
+  const { data } = await instance.get<CategoriesResponse>(
+    "/api/ingredients/categories"
+  );
   return data;
 };
 
@@ -33,7 +35,7 @@ export const getCategoryById = async (
   id: string
 ): Promise<CategoryResponse> => {
   const { data } = await instance.get<CategoryResponse>(
-    `/api/categories/${id}`
+    `/api/ingredients/categories/${id}`
   );
   return data;
 };

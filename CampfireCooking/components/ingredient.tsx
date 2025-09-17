@@ -111,7 +111,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onPress }) => {
   );
 };
 
-export default function CategoriesScreen() {
+export default function IngredientScreen() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
