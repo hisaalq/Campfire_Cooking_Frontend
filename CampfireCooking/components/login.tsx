@@ -57,9 +57,8 @@ export default function LoginScreen() {
   const loginMutation = useMutation({
     mutationKey: ["login"],
     mutationFn: login,
-    onSuccess: async (data) => {
-      setIsAuthenticated(true), console.log("logged in successfully", data);
-      router.push("/(protected)/(tabs)/userprofile");
+    onSuccess: async () => {
+      setIsAuthenticated(true), console.log("logged in successfully");
     },
     onError: (err: unknown) => {
       const message = isAxiosError(err)
@@ -73,8 +72,6 @@ export default function LoginScreen() {
     await loginMutation.mutateAsync({
       email: values.email,
       password: values.password,
-      username: "",
-      verifyPassword: "",
     });
   };
 
