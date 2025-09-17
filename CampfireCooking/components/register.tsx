@@ -81,11 +81,11 @@ export default function RegisterScreen() {
       email: values.email,
       password: values.password,
       verifyPassword: values.verifyPassword, // map confirm → verifyPassword
-      image: imageDataUrl ?? undefined, // send base64 data URL if selected
+      image: imageDataUrl ?? "", // send base64 data URL if selected
     });
   };
 
-  /** —— Image picking —— */
+  /** —— Image picking —— */  
   const pickImage = async () => {
     // Ask for permission explicitly (iOS shows system prompt, Android 13+ has scoped picker)
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
