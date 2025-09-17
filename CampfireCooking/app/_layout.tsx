@@ -4,7 +4,10 @@ import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { Appearance } from "react-native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 //hide (protected) from the tabs
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const colorScheme = Appearance.getColorScheme();
@@ -21,15 +24,20 @@ export default function RootLayout() {
   }, []);
 
   return (
-
-    <Stack screenOptions={{ headerStyle: { backgroundColor: theme.colors.background }, headerTintColor: theme.colors.text, headerShadowVisible: false }}>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Protected guard={isAuthenticated}>
-      <Stack.Screen name="(protected)" options={{ headerShown: false }} />
-      </Stack.Protected>
-      
-  </Stack>
-
+    <QueryClientProvider client={queryClient}>
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: theme.colors.background },
+          headerTintColor: theme.colors.text,
+          headerShadowVisible: false,
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Protected guard={isAuthenticated}>
+          <Stack.Screen name="(protected)" options={{ headerShown: false }} />
+        </Stack.Protected>
+      </Stack>
+    </QueryClientProvider>
   );
 }
