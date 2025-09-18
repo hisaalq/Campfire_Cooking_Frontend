@@ -35,7 +35,10 @@ const TabsLayout = () => {
     >
       <Tabs.Screen name="index" options={{ title: "Index"}} />
       <Tabs.Screen name="recipes" options={{ title: "Recipes" }} />
-      <Tabs.Screen name="ingredients" options={{ title: "Ingredients" }} />
+      <Tabs.Screen
+        name="ingredients"
+        options={{ title: "Ingredients", headerShown: false }}
+      />
       <Tabs.Screen name="search" options={{ title: "Search" }} />
       <Tabs.Screen name="users" options={{ title: "Users" }} />
       <Tabs.Screen name="userprofile" options={{ title: "Profile" }} />

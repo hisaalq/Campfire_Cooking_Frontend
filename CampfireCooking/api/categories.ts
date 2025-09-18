@@ -24,6 +24,13 @@ export interface CategoryResponse {
   message?: string;
 }
 
+export interface CreateCategoryRequest {
+  name: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+}
+
 export const getCategories = async (): Promise<CategoriesResponse> => {
   const { data } = await instance.get<CategoriesResponse>(
     "/api/ingredients/categories"
@@ -37,6 +44,16 @@ export const getCategoryById = async (
 ): Promise<CategoryResponse> => {
   const { data } = await instance.get<CategoryResponse>(
     `/api/ingredients/categories/${id}`
+  );
+  return data;
+};
+
+export const createCategory = async (
+  categoryData: CreateCategoryRequest
+): Promise<CategoryResponse> => {
+  const { data } = await instance.post<CategoryResponse>(
+    "/api/ingredients/categories",
+    categoryData
   );
   return data;
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,61 +8,21 @@ import {
   ActivityIndicator,
   SafeAreaView,
   Image,
+  Modal,
+  TextInput,
+  Alert,
 } from "react-native";
-import { useQuery } from "@tanstack/react-query";
-import { getCategories, IngredientCategory } from "@/api/categories";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getCategories,
+  IngredientCategory,
+  createCategory,
+  CreateCategoryRequest,
+} from "@/api/categories";
 import { Feather } from "@expo/vector-icons";
-
-/** —— New Brand palette from the design —— */
-const COLORS = {
-  almond: "#FFD4A9",
-  mossGreen: "#688A5F",
-  burntSienna: "#ED6A5A",
-  fireRed: "#FF4500",
-  goldenYellow: "#FFD700",
-  softCocoa: "#736558",
-  white: "#FFFFFF",
-} as const;
-
-const getCategoryStyle = (category: IngredientCategory) => {
-  const name = category.name.toLowerCase();
-
-  if (name.includes("protein") || name.includes("meat")) {
-    return {
-      backgroundColor: COLORS.fireRed,
-      textColor: COLORS.white,
-      icon: "🥩",
-    };
-  } else if (name.includes("vegetable") || name.includes("veggie")) {
-    return {
-      backgroundColor: COLORS.mossGreen,
-      textColor: COLORS.white,
-      icon: "🥕",
-    };
-  } else if (
-    name.includes("grain") ||
-    name.includes("bread") ||
-    name.includes("rice")
-  ) {
-    return {
-      backgroundColor: COLORS.goldenYellow,
-      textColor: COLORS.softCocoa,
-      icon: "🌾",
-    };
-  } else if (name.includes("dairy") || name.includes("cheese")) {
-    return {
-      backgroundColor: COLORS.goldenYellow,
-      textColor: COLORS.softCocoa,
-      icon: "🧀",
-    };
-  } else {
-    return {
-      backgroundColor: COLORS.mossGreen,
-      textColor: COLORS.white,
-      icon: "📦",
-    };
-  }
-};
+import { getToken } from "@/api/storage";
+import { COLORS } from "@/assets/style/colors";
+import { useRouter } from "expo-router";
 
 interface CategoryCardProps {
   category: IngredientCategory;
@@ -70,62 +30,180 @@ interface CategoryCardProps {
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category, onPress }) => {
-  const style = getCategoryStyle(category);
+  // Use a single consistent color for all cards
+  const backgroundColor = COLORS.teal;
+  const textColor = COLORS.card;
 
   return (
     <Pressable onPress={onPress} style={styles.cardContainer}>
-      <View
-        style={[
-          styles.categoryCard,
-          { backgroundColor: style.backgroundColor },
-        ]}
-      >
-        {/* Large Background Icon */}
-        <View style={styles.backgroundIcon}>
-          <Text style={styles.backgroundIconText}>{style.icon}</Text>
-        </View>
-
+      <View style={[styles.categoryCard, { backgroundColor }]}>
         {/* Content */}
         <View style={styles.cardContent}>
-          <Text style={[styles.categoryTitle, { color: style.textColor }]}>
+          <Text style={[styles.categoryTitle, { color: textColor }]}>
             {category.name}
           </Text>
-          <Text
-            style={[styles.categoryDescription, { color: style.textColor }]}
-          >
+          <Text style={[styles.categoryDescription, { color: textColor }]}>
             {category.description}
           </Text>
           <View
-            style={[
-              styles.itemCount,
-              { backgroundColor: `${style.textColor}20` },
-            ]}
-          >
-            <Text style={[styles.itemCountText, { color: style.textColor }]}>
-              0 items
-            </Text>
-          </View>
+            style={[styles.itemCount, { backgroundColor: `${textColor}20` }]}
+          ></View>
         </View>
       </View>
     </Pressable>
   );
 };
 
+interface CreateCategoryModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onSubmit: (data: CreateCategoryRequest) => void;
+  isLoading: boolean;
+}
+
+const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
+  visible,
+  onClose,
+  onSubmit,
+  isLoading,
+}) => {
+  const [formData, setFormData] = useState<CreateCategoryRequest>({
+    name: "",
+    description: "",
+  });
+
+  const handleSubmit = () => {
+    if (!formData.name.trim()) {
+      Alert.alert("Error", "Category name is required");
+      return;
+    }
+    onSubmit(formData);
+  };
+
+  const handleClose = () => {
+    setFormData({ name: "", description: "" });
+    onClose();
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
+      <SafeAreaView style={styles.modalContainer}>
+        <View style={styles.modalHeader}>
+          <Pressable onPress={handleClose} style={styles.modalCloseButton}>
+            <Feather name="x" size={24} color={COLORS.text} />
+          </Pressable>
+          <Text style={styles.modalTitle}>Create New Category</Text>
+          <View style={styles.modalPlaceholder} />
+        </View>
+
+        <ScrollView
+          style={styles.modalContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Category Name *</Text>
+            <TextInput
+              style={styles.input}
+              value={formData.name}
+              onChangeText={(text) => setFormData({ ...formData, name: text })}
+              placeholder="Enter category name"
+              placeholderTextColor={COLORS.placeholder}
+            />
+          </View>
+
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Description</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={formData.description}
+              onChangeText={(text) =>
+                setFormData({ ...formData, description: text })
+              }
+              placeholder="Enter category description"
+              placeholderTextColor={COLORS.placeholder}
+              multiline
+              numberOfLines={3}
+            />
+          </View>
+        </ScrollView>
+
+        <View style={styles.modalFooter}>
+          <Pressable
+            onPress={handleSubmit}
+            style={[
+              styles.submitButton,
+              isLoading && styles.submitButtonDisabled,
+            ]}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color={COLORS.card} />
+            ) : (
+              <Text style={styles.submitButtonText}>Create Category</Text>
+            )}
+          </Pressable>
+        </View>
+      </SafeAreaView>
+    </Modal>
+  );
+};
+
 export default function IngredientScreen() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Check authentication status
+  React.useEffect(() => {
+    const checkAuth = async () => {
+      const token = await getToken();
+      setIsAuthenticated(!!token);
+    };
+    checkAuth();
+  }, []);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
+  });
+
+  const createCategoryMutation = useMutation({
+    mutationFn: createCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      setShowCreateModal(false);
+      Alert.alert("Success", "Category created successfully!");
+    },
+    onError: (error: any) => {
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "Failed to create category"
+      );
+    },
   });
 
   const handleCategoryPress = (category: IngredientCategory) => {
     console.log("Navigate to category:", category.name);
   };
 
+  const handleCreateCategory = (categoryData: CreateCategoryRequest) => {
+    createCategoryMutation.mutate(categoryData);
+  };
+
+  const handleBackPress = () => {
+    router.back();
+  };
+
   if (isLoading) {
     return (
       <SafeAreaView style={styles.safe}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={COLORS.mossGreen} />
+          <ActivityIndicator size="large" color={COLORS.teal} />
           <Text style={styles.loadingText}>Loading categories...</Text>
         </View>
       </SafeAreaView>
@@ -136,7 +214,7 @@ export default function IngredientScreen() {
     return (
       <SafeAreaView style={styles.safe}>
         <View style={styles.errorContainer}>
-          <Feather name="alert-circle" size={48} color={COLORS.softCocoa} />
+          <Feather name="alert-circle" size={48} color={COLORS.text} />
           <Text style={styles.errorText}>Failed to load categories</Text>
           <Text style={styles.errorSubtext}>Please try again later</Text>
         </View>
@@ -152,8 +230,6 @@ export default function IngredientScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header removed to rely on app header */}
-
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <View style={styles.heroBackground}>
@@ -177,10 +253,6 @@ export default function IngredientScreen() {
         <View style={styles.mainSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Main Categories</Text>
-            <Pressable style={styles.manageButton}>
-              <Text style={styles.manageButtonText}>Manage</Text>
-              <Feather name="settings" size={12} color={COLORS.mossGreen} />
-            </Pressable>
           </View>
 
           <View style={styles.categoriesGrid}>
@@ -194,6 +266,14 @@ export default function IngredientScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Create Category Modal */}
+      <CreateCategoryModal
+        visible={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={handleCreateCategory}
+        isLoading={createCategoryMutation.isPending}
+      />
     </SafeAreaView>
   );
 }
@@ -201,7 +281,7 @@ export default function IngredientScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: COLORS.almond,
+    backgroundColor: COLORS.peach,
   },
   scrollView: {
     flex: 1,
@@ -214,7 +294,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: COLORS.softCocoa,
+    color: COLORS.text,
     fontFamily: "Inter",
   },
   errorContainer: {
@@ -226,13 +306,13 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    color: COLORS.softCocoa,
+    color: COLORS.text,
     fontFamily: "Inter",
     textAlign: "center",
   },
   errorSubtext: {
     fontSize: 14,
-    color: COLORS.softCocoa,
+    color: COLORS.text,
     opacity: 0.7,
     textAlign: "center",
   },
@@ -240,31 +320,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.card,
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: `${COLORS.softCocoa}20`,
+    borderBottomColor: COLORS.stroke,
   },
   backButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: `${COLORS.almond}50`,
+    backgroundColor: COLORS.peach,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: "600",
-    color: COLORS.softCocoa,
+    color: COLORS.text,
     fontFamily: "Inter",
   },
   addButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: `${COLORS.mossGreen}20`,
+    backgroundColor: `${COLORS.teal}20`,
   },
   heroSection: {
     height: 160,
-    backgroundColor: COLORS.mossGreen,
+    backgroundColor: COLORS.teal,
     marginHorizontal: 20,
     marginTop: 20,
     borderRadius: 16,
@@ -292,13 +372,13 @@ const styles = StyleSheet.create({
   heroTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    color: COLORS.white,
+    color: COLORS.card,
     marginBottom: 8,
     fontFamily: "Inter",
   },
   heroSubtitle: {
     fontSize: 14,
-    color: `${COLORS.white}90`,
+    color: `${COLORS.card}90`,
     textAlign: "center",
     fontFamily: "Inter",
   },
@@ -315,7 +395,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "600",
-    color: COLORS.softCocoa,
+    color: COLORS.text,
     fontFamily: "Inter",
   },
   manageButton: {
@@ -326,7 +406,7 @@ const styles = StyleSheet.create({
   manageButtonText: {
     fontSize: 14,
     fontWeight: "500",
-    color: COLORS.mossGreen,
+    color: COLORS.teal,
     fontFamily: "Inter",
   },
   categoriesGrid: {
@@ -385,6 +465,84 @@ const styles = StyleSheet.create({
   itemCountText: {
     fontSize: 12,
     fontWeight: "500",
+    fontFamily: "Inter",
+  },
+  // Modal styles
+  modalContainer: {
+    flex: 1,
+    backgroundColor: COLORS.card,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.stroke,
+  },
+  modalCloseButton: {
+    padding: 8,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: COLORS.text,
+    fontFamily: "Inter",
+  },
+  modalPlaceholder: {
+    width: 40,
+  },
+  modalContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  formGroup: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: COLORS.text,
+    marginBottom: 8,
+    fontFamily: "Inter",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: COLORS.stroke,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: COLORS.text,
+    backgroundColor: COLORS.fieldBg,
+    fontFamily: "Inter",
+  },
+  textArea: {
+    height: 80,
+    textAlignVertical: "top",
+  },
+  modalFooter: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.stroke,
+  },
+  submitButton: {
+    backgroundColor: COLORS.teal,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  submitButtonDisabled: {
+    opacity: 0.6,
+  },
+  submitButtonText: {
+    color: COLORS.card,
+    fontSize: 16,
+    fontWeight: "600",
     fontFamily: "Inter",
   },
 });
