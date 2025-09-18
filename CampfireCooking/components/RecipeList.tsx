@@ -5,7 +5,7 @@ import { Feather } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllRecipes } from "@/api/recipes";
-import RecipeInfo from "@/types/recipeinfo";
+import RecipeInfo from "@/types/RecipeInfo";
 import SingleRecipe from "./SingleRecipe";
 
 
@@ -37,7 +37,7 @@ const RecipeList = () => {
       {/* Hero section to mirror Ingredients page vibe */}
       <View style={styles.heroWrap}>
         <Image
-          source={require("@/assets/images/splash-icon.png")}
+          source={require("@/assets/images/CampfireCooking-logo-icon.png")}
           style={styles.banner}
           resizeMode="cover"
         />

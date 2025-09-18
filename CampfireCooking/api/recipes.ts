@@ -1,5 +1,5 @@
 import instance from ".";
-import RecipeInfo from "@/types/recipeinfo";
+import RecipeInfo from "@/types/RecipeInfo";
 
 const getAllRecipes = async () => {
     try{
@@ -9,7 +9,6 @@ const getAllRecipes = async () => {
     return data.data;
     } catch (error) {
       console.error("Error getting all recipes:", error);
-      console.error("Request URL:", instance.defaults.baseURL + "/api/recipes");
       throw error;
     }
   };  
