@@ -23,6 +23,7 @@ import { Feather } from "@expo/vector-icons";
 import { getToken } from "@/api/storage";
 import { COLORS } from "@/assets/style/colors";
 import { useRouter } from "expo-router";
+import AddIngredientOrCategoryModal from "./createIngCat";
 
 interface CategoryCardProps {
   category: IngredientCategory;
@@ -156,6 +157,7 @@ export default function IngredientScreen() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const queryClient = useQueryClient();
 
   // Check authentication status
@@ -253,6 +255,14 @@ export default function IngredientScreen() {
         <View style={styles.mainSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Main Categories</Text>
+            {isAuthenticated && (
+              <Pressable
+                style={styles.addButton}
+                onPress={() => setShowAddModal(true)}
+              >
+                <Feather name="plus" size={20} color={COLORS.teal} />
+              </Pressable>
+            )}
           </View>
 
           <View style={styles.categoriesGrid}>
@@ -267,7 +277,14 @@ export default function IngredientScreen() {
         </View>
       </ScrollView>
 
-      {/* Create Category Modal */}
+      {/* Add Ingredient or Category Modal */}
+      <AddIngredientOrCategoryModal
+        visible={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        categories={categories}
+      />
+
+      {/* Create Category Modal - keeping for backward compatibility */}
       <CreateCategoryModal
         visible={showCreateModal}
         onClose={() => setShowCreateModal(false)}
