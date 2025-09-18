@@ -5,6 +5,8 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { Appearance } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Drawer } from "expo-router/drawer";
+import CustomDrawer from "@/components/CustomDrawer";
 //hide (protected) from the tabs
 
 const queryClient = new QueryClient();
@@ -25,19 +27,19 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack
+      <Drawer
+        drawerContent={(props) => <CustomDrawer {...props} />}
         screenOptions={{
           headerStyle: { backgroundColor: theme.colors.background },
           headerTintColor: theme.colors.text,
           headerShadowVisible: false,
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Protected guard={isAuthenticated}>
-          <Stack.Screen name="(protected)" options={{ headerShown: false }} />
-        </Stack.Protected>
-      </Stack>
+        <Drawer.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Drawer.Screen name="(auth)" options={{ headerShown: false }} />
+        
+        <Drawer.Screen name="(protected)" options={{ headerShown: false }} />
+      </Drawer>
     </QueryClientProvider>
   );
 }

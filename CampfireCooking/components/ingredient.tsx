@@ -152,16 +152,7 @@ export default function IngredientScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Pressable style={styles.backButton}>
-            <Feather name="arrow-left" size={20} color={COLORS.softCocoa} />
-          </Pressable>
-          <Text style={styles.headerTitle}>Ingredient Categories</Text>
-          <Pressable style={styles.addButton}>
-            <Feather name="plus" size={20} color={COLORS.mossGreen} />
-          </Pressable>
-        </View>
+        {/* Header removed to rely on app header */}
 
         {/* Hero Section */}
         <View style={styles.heroSection}>

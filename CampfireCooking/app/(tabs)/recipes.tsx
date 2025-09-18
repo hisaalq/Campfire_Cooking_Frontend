@@ -1,11 +1,8 @@
-import { View, Text } from "react-native";
+import RecipeList from "../../components/RecipeList";
 
 const Recipes = () => {
   return (
-    <View>
-      <Text>Recipes</Text>
-    </View>
-  );
+    <RecipeList />);
 };
 
 export default Recipes;
