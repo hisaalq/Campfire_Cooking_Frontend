@@ -35,6 +35,7 @@ export const getCategories = async (): Promise<CategoriesResponse> => {
   const { data } = await instance.get<CategoriesResponse>(
     "/api/ingredients/categories"
   );
+  console.log(data);
   return data;
 };
 

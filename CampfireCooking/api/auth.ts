@@ -3,7 +3,7 @@ import instance from "./index";
 import { storeToken } from "./storage";
 import { SignUpInfo } from "@/types/SignUpInfo";
 import { LoginInfo } from "@/types/LoginInfo";
-import { UserInfo } from "@/types/UserProfile";
+import { UserInfo } from "@/types/Userinfo";
 
 type RegisterResponse = { token: string; user?: any; message?: string };
 
@@ -19,15 +19,6 @@ const login = async (userInfo: LoginInfo) => {
   return data;
 };
 
-const getUserInfo = async () => {
-  const { data } = await instance.get<RegisterResponse>("/api/profile");
-  return data;
-};
 
-const updateUser = async (UserInfo: UserInfo) => {
-  const { data } = await instance.put<RegisterResponse>("/api/profile", { params: UserInfo });
-  return data;
-};
-
-export { register, login, getUserInfo, updateUser };
+export { register, login };
 

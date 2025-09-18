@@ -230,22 +230,6 @@ export default function IngredientScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Pressable style={styles.backButton} onPress={handleBackPress}>
-            <Feather name="arrow-left" size={20} color={COLORS.text} />
-          </Pressable>
-          <Text style={styles.headerTitle}>Ingredient Categories</Text>
-          {isAuthenticated && (
-            <Pressable
-              style={styles.addButton}
-              onPress={() => setShowCreateModal(true)}
-            >
-              <Feather name="plus" size={20} color={COLORS.teal} />
-            </Pressable>
-          )}
-        </View>
-
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <View style={styles.heroBackground}>
