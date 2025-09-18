@@ -1,4 +1,4 @@
-import RecipeInfo from "@/types/recipeinfo";
+import RecipeInfo from "@/types/RecipeInfo";
 import { View, Text } from "react-native";
 import styles from "@/assets/style/stylesheet";
 import { COLORS } from "@/assets/style/colors";

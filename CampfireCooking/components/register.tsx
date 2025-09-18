@@ -133,7 +133,7 @@ export default function RegisterScreen() {
           </View>
 
           {/* Title (Draconian font should be loaded in root layout) */}
-          <Text style={[styles.title, { fontFamily: "Draconian" }]}>Join the Campfire</Text>
+          <Text style={[styles.title, { fontFamily: "Draconian" }]}>Sign Up</Text>
 
           {/* App icon / Avatar (tap to upload) */}
           <Pressable onPress={pickImage} style={styles.iconPressable} hitSlop={10}>

@@ -14,12 +14,11 @@ const getAllRecipes = async () => {
     }>("/api/recipes");
     console.log("Successfully fetched recipes:", data);
     return data.data;
-  } catch (error) {
-    console.error("Error getting all recipes:", error);
-    console.error("Request URL:", instance.defaults.baseURL + "/api/recipes");
-    throw error;
-  }
-};
+    } catch (error) {
+      console.error("Error getting all recipes:", error);
+      throw error;
+    }
+  };  
 
 const getRecipeById = async (id: string) => {
   try {

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Image } from "react-native";
 import styles from "@/assets/style/stylesheet";
 import { useQuery } from "@tanstack/react-query";
 import { getAllRecipes } from "@/api/recipes";
@@ -6,7 +6,7 @@ import { getUserInfo } from "@/api/user";
 import { getCategories } from "@/api/categories";
 import SingleRecipe from "@/components/SingleRecipe";
 import UserCard from "@/components/userCard";
-import RecipeInfo from "@/types/recipeinfo";
+import RecipeInfo from "@/types/RecipeInfo";
 
 const Index = () => {
   const recipesQ = useQuery({ queryKey: ["recipes-home"], queryFn: getAllRecipes });
@@ -14,6 +14,14 @@ const Index = () => {
   const categoriesQ = useQuery({ queryKey: ["categories-home"], queryFn: getCategories });
   return (
     <ScrollView style={styles.safe} contentContainerStyle={styles.scroll}>
+      <View style={styles.heroWrap}>
+        <Image
+          source={require("@/assets/images/CampfireCooking-logo-icon.png")}
+          style={styles.banner}
+          resizeMode="cover"
+        />
+        <View style={styles.bannerOverlay} />
+      </View>
       <View style={{ width: "100%", gap: 12 }}>
         <Text style={styles.sectionTitle}>Recipes</Text>
         <View style={{ width: "100%", gap: 12 }}>

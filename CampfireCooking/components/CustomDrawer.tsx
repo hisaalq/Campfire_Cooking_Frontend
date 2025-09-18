@@ -57,13 +57,13 @@ export default function CustomDrawer(props: any) {
 
       {isAuthenticated && (
         <>
-        <Stack.Protected guard={isAuthenticated}>
+        {/* <Stack.Protected guard={isAuthenticated}> */}
           <DrawerItem
             label="My Profile"
             onPress={() => router.push("/(protected)/myprofile")}
             labelStyle={{ color: '#8B4513' }}
           />
-          </Stack.Protected>
+          {/* </Stack.Protected> */}
           <DrawerItem
             label="My Dashboard"
             onPress={() => router.push("/(protected)/mydashboard")}

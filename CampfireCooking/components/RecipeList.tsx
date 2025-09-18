@@ -43,7 +43,7 @@ const RecipeList = () => {
       {/* Hero section to mirror Ingredients page vibe */}
       <View style={styles.heroWrap}>
         <Image
-          source={require("@/assets/images/splash-icon.png")}
+          source={require("@/assets/images/CampfireCooking-logo-icon.png")}
           style={styles.banner}
           resizeMode="cover"
         />
